@@ -1,5 +1,4 @@
 from __future__ import unicode_literals
-from fileinput import filename
 from pickle import FALSE
 from flask import Flask, render_template, request
 import youtube_dl
@@ -22,7 +21,7 @@ def save_to_mp3(url):
 
     with youtube_dl.YoutubeDL(options) as downloader:
         downloader.download(["" + url + ""])
-    return downloader.prepare_filename(downloader.extract_info(url, download=False)).replace(".m4a",".mp3")
+    return downloader.prepare_filename(downloader.extract_info(url, download=False)).replace(".m4a", ".mp3")
 
 def convert_file_to_text(file):
     model = whisper.load_model("base")
@@ -39,6 +38,7 @@ def index():
 def answer():
     url_ = request.form.get('searchbox')
     filename = save_to_mp3(url_)
+    print(filename)
     result = convert_file_to_text(filename)
     result_file = open('text_of_video.text', 'w')
     result_file.write(result['text'])
