@@ -21,7 +21,7 @@ def save_to_mp3(url):
 
     with youtube_dl.YoutubeDL(options) as downloader:
         downloader.download(["" + url + ""])
-    return downloader.prepare_filename(downloader.extract_info(url, download=False)).replace(".m4a", ".mp3")
+    return downloader.prepare_filename(downloader.extract_info(url, download=False)).replace(".webm",".mp3")
 
 def convert_file_to_text(file):
     model = whisper.load_model("base")
