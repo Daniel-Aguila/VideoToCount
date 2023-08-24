@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from concurrent.futures import process
 from pickle import FALSE
 from flask import Flask, render_template, request
 import youtube_dl
@@ -29,11 +30,45 @@ def convert_file_to_text(file):
     result = model.transcribe(file, fp16=FALSE)
     return result
 
-def safe_to_text_file(text_, nameOfSong):
-    result_file = open(nameOfSong + ' text_of_video.text', 'w')
-    result_file.write(text_['text'])
+def preprocessAndWrite(text_,nameOfSong):
+    full_name_of_text = nameOfSong + ' text_of_video.text'
+    unprocessed_text = text_['text']
+
+    #Preprocess
+    processed_text = unprocessed_text.lower()
+    processed_text = processed_text.replace(r",","")
+    processed_text = processed_text.replace(r"!","")
+    processed_text = processed_text.replace(r".","")
+    processed_text = processed_text.replace(r"1","")
+    processed_text = processed_text.replace(r"2","")
+    processed_text = processed_text.replace(r"3","")
+    processed_text = processed_text.replace(r"4","")
+    processed_text = processed_text.replace(r"5","")
+    processed_text = processed_text.replace(r"6","")
+    processed_text = processed_text.replace(r"7","")
+    processed_text = processed_text.replace(r"8","")
+    processed_text = processed_text.replace(r"9","")
+    processed_text = processed_text.replace(r"?","")
+    processed_text = processed_text.replace(r"  "," ")
+    processed_text = processed_text.replace(r"(can't|cannot)","can not")
+    processed_text = processed_text.replace(r"i'm","i am")
+    processed_text = processed_text.replace(r"what's","what is")
+    processed_text = processed_text.replace(r"i've","i have")
+    processed_text = processed_text.replace(r"she's","she is")
+    processed_text = processed_text.replace(r"he's","he is")
+    processed_text = processed_text.replace(r"it's","it is")
+    processed_text = processed_text.replace(r"there's","there is")
+    processed_text = processed_text.replace(r"n't"," not")
+    processed_text = processed_text.replace(r"we're","we are")
+
+
+
+    result_file = open(full_name_of_text, 'w')
+    print(processed_text)
+    result_file.write(processed_text)
     result_file.close()
-    return 'text_of_video.text'
+    return full_name_of_text
+    
 
 @app.route('/')
 def index():
@@ -44,10 +79,8 @@ def index():
 def answer():
     url_ = request.form.get('searchbox')
     filename_, songname_ = save_to_mp3(url_)
-    print(filename_)
-    print(songname_)
     text = convert_file_to_text(filename_)
-    nameOfTextFile = safe_to_text_file(text, songname_)
+    preprocessAndWrite(text,songname_)
 
 
     return(render_template('answer.html', songname=songname_))
