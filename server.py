@@ -23,7 +23,7 @@ def save_to_mp3(url):
     with youtube_dl.YoutubeDL(options) as downloader:
         downloader.download(["" + url + ""])
     name_ = downloader.extract_info(url, download=False)
-    return downloader.prepare_filename(downloader.extract_info(url, download=False)).replace(".webm",".mp3"), name_['title']
+    return downloader.prepare_filename(downloader.extract_info(url, download=False)).replace(".m4a",".mp3"), name_['title']
 
 def convert_file_to_text(file):
     model = whisper.load_model("base")
@@ -49,7 +49,6 @@ def preprocessAndWrite(text_,nameOfSong):
     processed_text = processed_text.replace(r"8","")
     processed_text = processed_text.replace(r"9","")
     processed_text = processed_text.replace(r"?","")
-    processed_text = processed_text.replace(r"  "," ")
     processed_text = processed_text.replace(r"(can't|cannot)","can not")
     processed_text = processed_text.replace(r"i'm","i am")
     processed_text = processed_text.replace(r"what's","what is")
@@ -60,6 +59,13 @@ def preprocessAndWrite(text_,nameOfSong):
     processed_text = processed_text.replace(r"there's","there is")
     processed_text = processed_text.replace(r"n't"," not")
     processed_text = processed_text.replace(r"we're","we are")
+    processed_text = processed_text.replace(r"is's","is")
+    processed_text = processed_text.replace(r"-"," ")
+    processed_text = processed_text.replace(r"they'll","they will")
+    processed_text = processed_text.replace(r"they're","they are")
+    processed_text = processed_text.replace(r"let's","let us")
+    processed_text = processed_text.replace(r"that's","that is")
+    processed_text = processed_text.replace(r"  "," ")
 
 
 
