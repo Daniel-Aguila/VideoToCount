@@ -1,10 +1,16 @@
 from __future__ import unicode_literals
 from concurrent.futures import process
 from pickle import FALSE
+from xml.dom import WRONG_DOCUMENT_ERR
 from flask import Flask, render_template, request
 import youtube_dl
 import whisper
 import warnings
+import nltk
+from nltk.corpus import stopwords
+nltk.download('stopwords')
+from nltk.tokenize import word_tokenize
+
 
 warnings.filterwarnings("ignore")
 
@@ -66,12 +72,15 @@ def preprocessAndWrite(text_,nameOfSong):
     processed_text = processed_text.replace(r"let's","let us")
     processed_text = processed_text.replace(r"that's","that is")
     processed_text = processed_text.replace(r"  "," ")
+    processed_text = processed_text.replace(r"'","")
 
 
+    text_tokens = word_tokenize(processed_text)
+    tokens_without_sw = [word for word in text_tokens if not word in stopwords.words()]
+    filtered_sentence = (" ").join(tokens_without_sw)
 
     result_file = open(full_name_of_text, 'w')
-    print(processed_text)
-    result_file.write(processed_text)
+    result_file.write(filtered_sentence)
     result_file.close()
     return full_name_of_text
     
