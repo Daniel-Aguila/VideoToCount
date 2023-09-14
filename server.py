@@ -1,4 +1,28 @@
 from __future__ import unicode_literals
+import json
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+import tensorflow as tf
+import watson_nlp
+import watson_nlp.data_model as dm
+
+from sklearn.model_selection import train_test_split
+from watson_core.toolkit import fileio
+from watson_core.toolkit.quality_evaluation import QualityEvaluator, EvalTypes
+
+from watson_nlp.blocks.classification.bert import BERT
+from watson_nlp.blocks.classification.cnn import CNN
+from watson_core.data_model.streams.resolver import DataStreamResolver
+from watson_core.data_model.streams.resolver import DataStream
+from watson_nlp.blocks.classification.svm import SVM
+from watson_nlp.blocks.vectorization.tfidf import TFIDF
+
+pd.set_option('display.max_colwidth',0)
+
+block_models = watson_nlp.get_models().get_alias_models()
+workflow_models = watson_nlp.get_workflows().get_alias_models()
+
 from concurrent.futures import process
 from pickle import FALSE
 from xml.dom import WRONG_DOCUMENT_ERR
@@ -29,7 +53,7 @@ def save_to_mp3(url):
     with youtube_dl.YoutubeDL(options) as downloader:
         downloader.download(["" + url + ""])
     name_ = downloader.extract_info(url, download=False)
-    return downloader.prepare_filename(downloader.extract_info(url, download=False)).replace(".m4a",".mp3"), name_['title']
+    return downloader.prepare_filename(downloader.extract_info(url, download=False)).replace(".webm",".mp3"), name_['title']
 
 def convert_file_to_text(file):
     model = whisper.load_model("base")
@@ -74,13 +98,15 @@ def preprocessAndWrite(text_,nameOfSong):
     processed_text = processed_text.replace(r"  "," ")
     processed_text = processed_text.replace(r"'","")
 
-
     text_tokens = word_tokenize(processed_text)
     tokens_without_sw = [word for word in text_tokens if not word in stopwords.words()]
+    
+
     filtered_sentence = (" ").join(tokens_without_sw)
 
     result_file = open(full_name_of_text, 'w')
     result_file.write(filtered_sentence)
+    print(filtered_sentence)
     result_file.close()
     return full_name_of_text
     
