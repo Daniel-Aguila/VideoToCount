@@ -4,24 +4,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import tensorflow as tf
-import watson_nlp
-import watson_nlp.data_model as dm
 
 from sklearn.model_selection import train_test_split
-from watson_core.toolkit import fileio
-from watson_core.toolkit.quality_evaluation import QualityEvaluator, EvalTypes
-
-from watson_nlp.blocks.classification.bert import BERT
-from watson_nlp.blocks.classification.cnn import CNN
-from watson_core.data_model.streams.resolver import DataStreamResolver
-from watson_core.data_model.streams.resolver import DataStream
-from watson_nlp.blocks.classification.svm import SVM
-from watson_nlp.blocks.vectorization.tfidf import TFIDF
 
 pd.set_option('display.max_colwidth',0)
-
-block_models = watson_nlp.get_models().get_alias_models()
-workflow_models = watson_nlp.get_workflows().get_alias_models()
 
 from concurrent.futures import process
 from pickle import FALSE
@@ -34,6 +20,7 @@ import nltk
 from nltk.corpus import stopwords
 nltk.download('stopwords')
 from nltk.tokenize import word_tokenize
+from nltk.stem import PorterStemmer
 
 
 warnings.filterwarnings("ignore")
@@ -99,9 +86,11 @@ def preprocessAndWrite(text_,nameOfSong):
     processed_text = processed_text.replace(r"'","")
 
     text_tokens = word_tokenize(processed_text)
-    tokens_without_sw = [word for word in text_tokens if not word in stopwords.words()]
-    
+    #stemming
+    stemmer = PorterStemmer()
 
+    tokens_without_sw = [stemmer.stem(word) for word in text_tokens if word not in set(stopwords.words('english'))]
+    
     filtered_sentence = (" ").join(tokens_without_sw)
 
     result_file = open(full_name_of_text, 'w')
