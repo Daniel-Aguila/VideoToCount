@@ -20,7 +20,9 @@ import nltk
 from nltk.corpus import stopwords
 nltk.download('stopwords')
 from nltk.tokenize import word_tokenize
+from nltk.tokenize import sent_tokenize
 from nltk.stem import PorterStemmer
+from nltk.stem import WordNetLemmatizer
 
 
 warnings.filterwarnings("ignore")
@@ -52,6 +54,8 @@ def preprocessAndWrite(text_,nameOfSong):
     unprocessed_text = text_['text']
 
     #Preprocess
+    
+    '''
     processed_text = unprocessed_text.lower()
     processed_text = processed_text.replace(r",","")
     processed_text = processed_text.replace(r"!","")
@@ -84,18 +88,22 @@ def preprocessAndWrite(text_,nameOfSong):
     processed_text = processed_text.replace(r"that's","that is")
     processed_text = processed_text.replace(r"  "," ")
     processed_text = processed_text.replace(r"'","")
+    '''
 
-    text_tokens = word_tokenize(processed_text)
+    sentences = sent_tokenize(unprocessed_text)
     #stemming
     stemmer = PorterStemmer()
+    lemmatizer = WordNetLemmatizer()
 
-    tokens_without_sw = [stemmer.stem(word) for word in text_tokens if word not in set(stopwords.words('english'))]
+    for i in range(len(sentences)):
+        words = word_tokenize(sentences[i])
+        tokens_without_sw = [lemmatizer.lemmatize(word) for word in words if word not in set(stopwords.words('english'))]
     
-    filtered_sentence = (" ").join(tokens_without_sw)
+        sentences[i] = (" ").join(tokens_without_sw)
 
     result_file = open(full_name_of_text, 'w')
-    result_file.write(filtered_sentence)
-    print(filtered_sentence)
+    result_file.writelines(sentences)
+    print(sentences)
     result_file.close()
     return full_name_of_text
     
