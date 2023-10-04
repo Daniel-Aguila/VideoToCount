@@ -23,6 +23,7 @@ from nltk.tokenize import word_tokenize
 from nltk.tokenize import sent_tokenize
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
+import re
 
 
 warnings.filterwarnings("ignore")
@@ -54,41 +55,6 @@ def preprocessAndWrite(text_,nameOfSong):
     unprocessed_text = text_['text']
 
     #Preprocess
-    
-    '''
-    processed_text = unprocessed_text.lower()
-    processed_text = processed_text.replace(r",","")
-    processed_text = processed_text.replace(r"!","")
-    processed_text = processed_text.replace(r".","")
-    processed_text = processed_text.replace(r"1","")
-    processed_text = processed_text.replace(r"2","")
-    processed_text = processed_text.replace(r"3","")
-    processed_text = processed_text.replace(r"4","")
-    processed_text = processed_text.replace(r"5","")
-    processed_text = processed_text.replace(r"6","")
-    processed_text = processed_text.replace(r"7","")
-    processed_text = processed_text.replace(r"8","")
-    processed_text = processed_text.replace(r"9","")
-    processed_text = processed_text.replace(r"?","")
-    processed_text = processed_text.replace(r"(can't|cannot)","can not")
-    processed_text = processed_text.replace(r"i'm","i am")
-    processed_text = processed_text.replace(r"what's","what is")
-    processed_text = processed_text.replace(r"i've","i have")
-    processed_text = processed_text.replace(r"she's","she is")
-    processed_text = processed_text.replace(r"he's","he is")
-    processed_text = processed_text.replace(r"it's","it is")
-    processed_text = processed_text.replace(r"there's","there is")
-    processed_text = processed_text.replace(r"n't"," not")
-    processed_text = processed_text.replace(r"we're","we are")
-    processed_text = processed_text.replace(r"is's","is")
-    processed_text = processed_text.replace(r"-"," ")
-    processed_text = processed_text.replace(r"they'll","they will")
-    processed_text = processed_text.replace(r"they're","they are")
-    processed_text = processed_text.replace(r"let's","let us")
-    processed_text = processed_text.replace(r"that's","that is")
-    processed_text = processed_text.replace(r"  "," ")
-    processed_text = processed_text.replace(r"'","")
-    '''
 
     sentences = sent_tokenize(unprocessed_text)
     #stemming
@@ -96,8 +62,10 @@ def preprocessAndWrite(text_,nameOfSong):
     lemmatizer = WordNetLemmatizer()
 
     for i in range(len(sentences)):
-        words = word_tokenize(sentences[i])
-        tokens_without_sw = [lemmatizer.lemmatize(word) for word in words if word not in set(stopwords.words('english'))]
+        processed_text = re.sub('[^a-zA-Z]',' ', sentences[i]) #replaces all the characters except for a-z A-Z characters into spaces
+        processed_text = processed_text.lower()
+        processed_text = processed_text.split()
+        tokens_without_sw = [lemmatizer.lemmatize(word) for word in processed_text if word not in set(stopwords.words('english'))]
     
         sentences[i] = (" ").join(tokens_without_sw)
 
