@@ -94,6 +94,7 @@ def answer():
     text = convert_file_to_text(filename_)
     songgenre_ = topGenre(text)
 
+    #TODO Fix embedded play link
     embed_url = url_.replace("watch?=","embed/")
     return(render_template('answer.html', songname=songname_, songgenre=songgenre_, youtubelink=embed_url))
 
