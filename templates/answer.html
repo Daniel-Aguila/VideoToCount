@@ -7,7 +7,9 @@
     <body>
         <h1>Searching the emotional genre of the song: {{songname}}</h1>
         <h2>The emotional genre was found to most likely be: {{songgenre}}</h2>
-        <a href="{{ url_for('index') }}">Go Back</a>
+        <button><a href="{{ url_for('index') }}">Go Back</a></button>
+
+        <iframe src="{{youtubelink}}"></iframe>
 
     </body>
 </html>

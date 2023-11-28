@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+from statistics import multimode
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
@@ -73,14 +74,13 @@ def convert_file_to_text(file):
     #result_file.close()
     #return full_name_of_text
 def topGenre(songLyrics):
-    classifier = pipeline("zero-shot-classification")
-    resultdict = classifier(songLyrics['text'], 
-        candidate_labels=[
-        "Romance", "Melancholy", "Happiness","Empowerment","Nostalgia","Peace","Excitement","Hope","Reflection","Euphoria"
-        ])
-    genre = resultdict['labels'][0]
-
-    return genre
+    classifier = pipeline("zero-shot-classification", model="MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli")
+    sequence_to_classify = songLyrics['text']
+    candidate_labels=[
+        "Joy", "Sadness", "Anger","Fear","Surprise","Disgust","Love","Excitement","Confidence","Curiosity","Shame","Hope","Loneliness","Satisfaction"
+        ]
+    output = classifier(sequence_to_classify, candidate_labels, multi_label=False)
+    return output['labels'][0]
 
 @app.route('/')
 def index():
@@ -94,8 +94,8 @@ def answer():
     text = convert_file_to_text(filename_)
     songgenre_ = topGenre(text)
 
-
-    return(render_template('answer.html', songname=songname_, songgenre=songgenre_))
+    embed_url = url_.replace("watch?=","embed/")
+    return(render_template('answer.html', songname=songname_, songgenre=songgenre_, youtubelink=embed_url))
 
 if __name__ == '__main__':
     app.run(host="127.0.0.1", port=8080, debug=True)
