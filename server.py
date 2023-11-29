@@ -51,28 +51,7 @@ def convert_file_to_text(file):
     result = model.transcribe(file, fp16=FALSE)
     return result
 
-#def preprocessAndWrite(text_,nameOfSong):
-    #full_name_of_text = nameOfSong + ' text_of_video.text'
-    #unprocessed_text = text_['text']
-
-    #Preprocess
-
-    #sentences = sent_tokenize(unprocessed_text)
-    #lemmatizer = WordNetLemmatizer()
-
-    #for i in range(len(sentences)):
-    #    processed_text = re.sub('[^a-zA-Z]',' ', sentences[i]) #replaces all the characters except for a-z A-Z characters into spaces
-    #    processed_text = processed_text.lower()
-    #    processed_text = processed_text.split('.')
-    #    tokens_without_sw = [lemmatizer.lemmatize(word) for word in processed_text if word not in set(stopwords.words('english'))]
-    #
-    #    sentences[i] = (" ").join(tokens_without_sw)
-
-    #result_file = open(full_name_of_text, 'w')
-    #result_file.writelines(unprocessed_text)
-    #print(unprocessed_text)
-    #result_file.close()
-    #return full_name_of_text
+#Laurer, Moritz, Wouter van Atteveldt, Andreu Salleras Casas, and Kasper Welbers. 2022. ‘Less Annotating, More Classifying – Addressing the Data Scarcity Issue of Supervised Machine Learning with Deep Transfer Learning and BERT - NLI’. Preprint, June. Open Science Framework
 def topGenre(songLyrics):
     classifier = pipeline("zero-shot-classification", model="MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli")
     sequence_to_classify = songLyrics['text']
@@ -95,7 +74,8 @@ def answer():
     songgenre_ = topGenre(text)
 
     #TODO Fix embedded play link
-    embed_url = url_.replace("watch?=","embed/")
+    embed_url = url_.replace("watch?v=","embed/")
+    print(embed_url)
     return(render_template('answer.html', songname=songname_, songgenre=songgenre_, youtubelink=embed_url))
 
 if __name__ == '__main__':

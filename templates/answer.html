@@ -9,7 +9,7 @@
         <h2>The emotional genre was found to most likely be: {{songgenre}}</h2>
         <button><a href="{{ url_for('index') }}">Go Back</a></button>
 
-        <iframe src="{{youtubelink}}"></iframe>
+        <iframe src="{{youtubelink}}" gesture="media" allow="encrypted-media"></iframe>
 
     </body>
 </html>
